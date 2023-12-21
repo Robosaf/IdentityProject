@@ -1,8 +1,33 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using IdentityProject.Data
+@model List<IdentityRole>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4 fw-bold">Welcome To Robert's Identity Project</h1>
 </div>
+<br/>
+<h2>Your Role:</h2>
+@if (User.Identity.IsAuthenticated)
+{
+    @foreach (var role in Model)
+    {
+        @if (User.IsInRole(role.Name))
+        {
+            <h3>You are an @role.Name</h3>
+            return;
+        }
+    }
+}
+else
+{
+    <h3>Ooopsss...You have not role. Please login or register to get it :)</h3>
+}
+
+
+
+

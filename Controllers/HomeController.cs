@@ -1,4 +1,6 @@
-﻿using IdentityProject.Models;
+﻿using IdentityProject.Data;
+using IdentityProject.Interfaces;
+using IdentityProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +9,18 @@ namespace IdentityProject.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRoleRepository _roleRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IRoleRepository roleRepository)
         {
             _logger = logger;
+            _roleRepository = roleRepository;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var roles = _roleRepository.GetAllRoles();
+            return View(roles);
         }
 
         public IActionResult Privacy()

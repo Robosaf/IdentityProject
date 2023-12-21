@@ -1,4 +1,10 @@
+using IdentityProject.Controllers;
 using IdentityProject.Data;
+using IdentityProject.Helpers;
+using IdentityProject.Interfaces;
+using IdentityProject.Models;
+using IdentityProject.Repositories;
+using IdentityProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +14,40 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(e => 
     e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IRoleRepository, RoleRepository>();
+builder.Services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+
+
+builder.Services
+    .Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("EmailSender"));
+
+builder.Services.Configure<IdentityOptions>(opt =>
+{
+    opt.Password.RequiredLength = 5;
+    opt.Password.RequireLowercase = true;
+    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+});
+
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = "id";
+        options.ClientSecret = "secret";
+        options.SignInScheme = IdentityConstants.ExternalScheme;
+    });
+
+builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
@@ -30,6 +65,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

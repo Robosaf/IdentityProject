@@ -1,0 +1,16 @@
+﻿@model IdentityProject.ViewModels.ExternalLoginViewModel
+
+<h1>Registration</h1>
+
+<form asp-controller="Account" asp-action="Register" method="get">
+    <hr />
+    <h3>
+        You should register to our service before Singing In by <strong>@ViewData["ProviderDisplayName"]</strong>
+    </h3>
+
+    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4" style="padding: 20xp">
+        <div class="offset-md-2 col-md-10">
+            <button type="submit" class="btn btn-primary btn-lg">Go to Register Page</button>
+        </div>
+    </div>
+</form>
